@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Century",
-  description: "Century is a modern banking platform for everyone.",
+  title: "HarborFront",
+  description: "HarborFront is a modern banking platform for everyone.",
   icons: {
     icon: '/icon/logo.svg',
   }
