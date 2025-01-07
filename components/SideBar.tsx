@@ -32,7 +32,7 @@ const SideBar = ({user}: SiderbarProps) => {
               <Link 
                 href={item.route} 
                 key={item.label}
-                className={cn('sidear-link flex items-center text-blue-500 gap-4', {
+                className={cn('sidebar-link', {
                   'bg-bank-gradient': isActive
                 })}
                 >
@@ -52,7 +52,10 @@ const SideBar = ({user}: SiderbarProps) => {
               </Link>
             )
         })}
+
+        USER
         </nav>
+        FOOTER
     </section>
   )
 }
