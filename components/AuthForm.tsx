@@ -125,6 +125,12 @@ const AuthForm = ({ type }: { type: string }) => {
                         label="SSN"
                         placeholder="Example 1234"
                     />
+                    <CustomInput
+                        control={form.control}
+                        name="ssn"
+                        label="SSN"
+                        placeholder="Example 1234"
+                    />
                     </>
                 )}
 
