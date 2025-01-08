@@ -204,6 +204,11 @@ export const authFormSchema = z.object({
   address: z.string().min(2),
   dateOfBirth: z.string().min(2),
   postalCode: z.string().min(2),
+<<<<<<< HEAD
+  state: z.string().min(3),
+  ssn: z.string().min(3),
+=======
   state: z.string().min(2),
   ssn: z.string().min(2),
+>>>>>>> ae5aa7ca96e14337c516d7d716f5e59dc2f98f8c
 });
