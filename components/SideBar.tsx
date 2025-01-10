@@ -19,11 +19,11 @@ const SideBar = ({user}: SiderbarProps) => {
                 src='/icons/logo.svg'
                 width={34}
                 height={34}
-                alt='City Bank Logo'
+                alt='HarborFront Logo'
                 className='size-[24px] max-xl:size-14'
             />
             <h1 className='sidebar-logo'>
-              CityBank
+              HarborFront
             </h1>
           </Link>
           {sidebarLinks.map((item) => {

@@ -195,20 +195,18 @@ export const getTransactionStatus = (date: Date) => {
   return date > twoDaysAgo ? "Processing" : "Success";
 };
 
-export const authFormSchema = z.object({
+export const authFormSchema = (type: string) => z.object({
+  // sign up
+  firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+  city: type === 'sign-in' ? z.string().optional() : z.string() .min(2) .max(20),
+  state: type === 'sign-in' ? z.string().optional() : z.string() .min(2) .max(20),
+  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3) .max(6),
+  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().max(3),
+  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+
+  // both sign in and up
   email: z.string().email(),
-  password: z.string().min(8),
-  username: z.string().min(8),
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-  address: z.string().min(2),
-  dateOfBirth: z.string().min(2),
-  postalCode: z.string().min(2),
-<<<<<<< HEAD
-  state: z.string().min(3),
-  ssn: z.string().min(3),
-=======
-  state: z.string().min(2),
-  ssn: z.string().min(2),
->>>>>>> ae5aa7ca96e14337c516d7d716f5e59dc2f98f8c
-});
+  password: z.string().min(8),  
+})
