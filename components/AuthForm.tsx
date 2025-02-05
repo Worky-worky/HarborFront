@@ -14,22 +14,48 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
+import { Control } from "react-hook-form";
 
+interface CustomInputProps {
+  control: Control<any>;
+  name: string;
+  label: string;
+  placeholder: string;
+}
+
+
+const CustomInput = ({ control, name, label, placeholder }: CustomInputProps) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input 
+              placeholder={placeholder}
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
 
   const formSchema = authFormSchema(type);
 
@@ -43,31 +69,28 @@ const AuthForm = ({ type }: { type: string }) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-
     try {
-      // Sign up with Appwrite and create a plaind token
       if (type === "sign-up") {
-       const newUser = await signUp(data);
-
-       setUser(newUser);
+        const newUser = await signUp(data);
+        setUser(newUser as unknown as User);
       }
-     
+      
       if (type === "sign-in") {
-       const response = await signIn({
-        email: data.email,
-        password: data.password,
-       })
-       
-       if(response) router.push("/");
+        const response = await signIn({
+          email: data.email,
+          password: data.password,
+        })
+        
+        if(response) router.push("/");
       }
-
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
+  
 
   return (
     <section className="auth-form">
@@ -79,25 +102,21 @@ const AuthForm = ({ type }: { type: string }) => {
             height={34}
             alt="HarborFront Logo"
           />
-          <h1
-            className="text-26 font-ibm-plex-serif font-bold
-            text-black-1"
-          >
+          <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">
             HarborFront
           </h1>
         </Link>
 
-        <div className="flex flex-col  gap-1 md:gap-3">
+        <div className="flex flex-col gap-1 md:gap-3">
           <h1 className="text-24 lg:text-36 font-semibold text-gray-900">
             {user ? "Link Account" : type === "sign-in" ? "Sign In" : "Sign Up"}
             <p className="text-16 font-normal text-gray-600">
-              {user
-                ? "Link your account to get started"
-                : "Please enter your details"}
+              {user ? "Link your account to get started" : "Please enter your details"}
             </p>
           </h1>
         </div>
       </header>
+      
       {user ? (
         <div className="flex flex-col gap-4">{/*PlaidLink*/}</div>
       ) : (
@@ -151,19 +170,19 @@ const AuthForm = ({ type }: { type: string }) => {
                   </div>
 
                   <div className="flex gap-4 justify-between">
-                  <CustomInput
-                    control={form.control}
-                    name="dateOfBirth"
-                    label="Date of Birth"
-                    placeholder="YYY-MM-DD"
-                  />
-                  <CustomInput
-                    control={form.control}
-                    name="ssn"
-                    label="SSN"
-                    placeholder="Example 1234"
-                  />
-                   </div>
+                    <CustomInput
+                      control={form.control}
+                      name="dateOfBirth"
+                      label="Date of Birth"
+                      placeholder="YYY-MM-DD"
+                    />
+                    <CustomInput
+                      control={form.control}
+                      name="ssn"
+                      label="SSN"
+                      placeholder="Example 1234"
+                    />
+                  </div>
                 </>
               )}
 
@@ -200,9 +219,7 @@ const AuthForm = ({ type }: { type: string }) => {
 
           <footer className="flex justify-center gap-1">
             <p className="text-14 font-normal text-gray-600">
-              {type === "sign-in"
-                ? "Dont have an account?"
-                : "Already have an account?"}
+              {type === "sign-in" ? "Dont have an account?" : "Already have an account?"}
             </p>
             <Link
               href={type === "sign-in" ? "/sign-up" : "/sign-in"}

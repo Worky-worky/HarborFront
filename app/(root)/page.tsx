@@ -1,27 +1,45 @@
 import React from 'react'
 import HeaderBox from '@/components/HeaderBox'
-import TotalBalanceBox from '@/components/TotalBalanceBox';
-import RightSidebar from '@/components/RightSidebar';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
-
+import TotalBalanceBox from '@/components/TotalBalanceBox'
+import RightSidebar from '@/components/RightSidebar'
+import { getLoggedInUser } from '@/lib/actions/user.actions'
+import { redirect } from 'next/navigation';
 
 const Home = async () => {
-  const loggedIn = await getLoggedInUser();
-   
+  const user = await getLoggedInUser();
+ 
+  if (!user) {
+    redirect('/sign-up');
+  }
+
+  // Sample bank data to display cards
+  const sampleBanks = [
+    {
+      $id: '1',
+      currentBalance: 580000.00,
+      mask: '6473'
+    },
+    {
+      $id: '2',
+      currentBalance: 930000.00,
+      mask: '8901'
+    }
+  ];
+
   return (
     <section className='home'>
       <div className='home-content'>
         <header className='home-header'>
-          <HeaderBox 
+          <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggedIn?.name || 'Guest'}
-            subtext="access and manage your account and transactions efficiently"
+            user={user?.name || 'Guest'}
+            subtext="Access and manage your account and transactions efficiently"
           />
-          <TotalBalanceBox 
-            accounts={[]}
-            totalBanks={1}
-            totalCurrentBalance={1250.75}
+          <TotalBalanceBox
+            accounts={sampleBanks}
+            totalBanks={sampleBanks.length}
+            totalCurrentBalance={sampleBanks.reduce((acc, bank) => acc + bank.currentBalance, 0)}
           />
         </header>
 
@@ -29,16 +47,12 @@ const Home = async () => {
       </div>
 
       <RightSidebar
-        user={loggedIn}
+        user={user}
         transactions={[]}
-        banks={[
-          {currentBalance: 6789.50}, 
-          {currentBalance: 2700.79},
-        ]}
+        banks={sampleBanks}
       />
     </section>
   )
 }
-
 
 export default Home

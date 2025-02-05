@@ -9,15 +9,19 @@ export async function createSessionClient() {
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
-  const cookieStore = await cookies();
-  const session = cookieStore.get("appwrite-session");
+  const session = (await cookies()).get("appwrite-session");
 
-  if (!session || !session.value) {
-    throw new Error("No session");
+  // If session exists, proceed with authenticated client
+  if (session?.value) {
+    client.setSession(session.value);
+    return {
+      get account() {
+        return new Account(client);
+      },
+    };
   }
 
-  client.setSession(session.value);
-
+  // Return unauthenticated client
   return {
     get account() {
       return new Account(client);

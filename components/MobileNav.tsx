@@ -20,7 +20,7 @@ import Footer from "./Footer";
 const MobileNav = ({ user }: MobileNavProps) => {
   const pathname = usePathname();
   return (
-    <section className="w-full max-w-[264px]">
+    <section className="w-full max-w-[200px]">
       <Sheet>
         <SheetTrigger>
           <Image
@@ -31,9 +31,11 @@ const MobileNav = ({ user }: MobileNavProps) => {
             className="cursor-pointer"
           />
         </SheetTrigger>
-        <SheetContent side="left" className="border-none bg-white">
+        <SheetContent side="left" className="border-none bg-white w-70">
           <SheetHeader>
-            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <SheetTitle className="sr-only">
+              Navigation Menu
+            </SheetTitle>
           </SheetHeader>
           
           <Link
@@ -42,20 +44,20 @@ const MobileNav = ({ user }: MobileNavProps) => {
           >
             <Image
               src="/icons/logo.svg"
-              width={34}
-              height={34}
-              alt="City Bank Logo"
+              width={24}
+              height={24}
+              alt="HarborFront Bank Logo"
             />
             <h1
-              className="text-26 font-ibm-plex-serif font-bold
+              className="text-15 font-ibm-plex-serif font-bold
             text-black-1"
             >
-              CityBank
+              HarborFront
             </h1>
           </Link>
           <div className="mobilenav-sheet">
             <SheetClose>
-              <nav className="flex h-full flex-col pt-16 text-white">
+              <nav className="flex h-full flex-col pt-10 text-white">
                 {sidebarLinks.map((item) => {
                   const isActive =
                     pathname === item.route ||
@@ -83,7 +85,7 @@ const MobileNav = ({ user }: MobileNavProps) => {
                           className={cn("text-16 font-semibold text-black-2",
                             {"!text-white": isActive}
                         )}
-                        >
+                        > 
                           {item.label}
                         </p>
                       </Link>

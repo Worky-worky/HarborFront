@@ -37,7 +37,7 @@ declare type User = {
   address1: string;
   city: string;
   state: string;
-  postalCode: string;
+  postalCode: string; 
   dateOfBirth: string;
   ssn: string;
 };

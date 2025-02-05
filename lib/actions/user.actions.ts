@@ -5,19 +5,29 @@ import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
 
-export const signIn = async ({email, password}: 
-  signInProps) => {
+export const signIn = async ({email, password}: signInProps) => {
   try {
     const { account } = await createAdminClient();
 
-    const response = await account.
-    createEmailPasswordSession(email, password);
+    // Create session
+    const session = await account.createEmailPasswordSession(email, password);
 
-    return parseStringify(response);
+    // Set session cookie
+    (await cookies()).set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+
+    // Return session data
+    return parseStringify(session);
   } catch (error) {
     console.error('Error', error);
+    return null;
   }
 };
+
 
 
 export const signUp = async (userData: SignUpParams) => {
@@ -25,8 +35,8 @@ export const signUp = async (userData: SignUpParams) => {
 
   try {
     const { account } = await createAdminClient();
-    const cookieStore = await cookies();
 
+    // Create new user account
     const newUserAccount = await account.create(
       ID.unique(),
       email,
@@ -34,28 +44,36 @@ export const signUp = async (userData: SignUpParams) => {
       `${firstName} ${lastName}`
     );
 
+    // Create session
     const session = await account.createEmailPasswordSession(email, password);
- 
-    cookieStore.set("appwrite-session", session.secret, {
+
+    // Set secure cookie
+    (await cookies()).set("appwrite-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     });
 
-    return parseStringify(newUserAccount);
+    // Return the new user data
+    return newUserAccount;
   } catch (error) {
-    console.error('Error', error);
+    throw new Error('Failed to create user account');
   }
-};
+}
+
 
 
 export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
-
-    const user = await account.get();
+    const session = await account.getSession('current');
     
+    if (!session) {
+      return null;
+    }
+    
+    const user = await account.get();
     return parseStringify(user);
   } catch (error) {
     return null;
@@ -63,14 +81,15 @@ export async function getLoggedInUser() {
 }
 
 
+
 export const logoutAccount = async () => {
   try {
     const { account } = await createSessionClient();
-    const cookieStore = await cookies();
 
-    cookieStore.delete("appwrite-session");
+    (await cookies()).delete('appwrite-session');
 
     await account.deleteSession("current");
+
   } catch (error) {
     return null;
   }
