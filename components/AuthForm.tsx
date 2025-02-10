@@ -22,6 +22,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import { Control } from "react-hook-form";
+import PlaidLink from "./PlaidLink";
 
 interface CustomInputProps {
   control: Control<any>;
@@ -71,10 +72,25 @@ const AuthForm = ({ type }: { type: string }) => {
     setIsLoading(true);
     try {
       if (type === "sign-up") {
-        const newUser = await signUp(data);
+        // Format SSN to XXX-XX-XXXX pattern
+        const formattedSSN = data.ssn!.replace(/\D/g, '').replace(/(\d{3})(\d{2})(\d{4})/, '$1-$2-$3');
+  
+        const userData = {
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          city: data.city!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dateOfBirth: new Date(data.dateOfBirth!).toISOString().split('T')[0],
+          ssn: formattedSSN,
+          email: data.email,
+          password: data.password,
+        }
+        const newUser = await signUp(userData);
         setUser(newUser as unknown as User);
       }
-      
+  
       if (type === "sign-in") {
         const response = await signIn({
           email: data.email,
@@ -89,6 +105,8 @@ const AuthForm = ({ type }: { type: string }) => {
       setIsLoading(false);
     }
   };
+  
+  
   
   
 
@@ -118,7 +136,9 @@ const AuthForm = ({ type }: { type: string }) => {
       </header>
       
       {user ? (
-        <div className="flex flex-col gap-4">{/*PlaidLink*/}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant='primary' />
+        </div>
       ) : (
         <>
           <Form {...form}>
@@ -229,7 +249,7 @@ const AuthForm = ({ type }: { type: string }) => {
             </Link>
           </footer>
         </>
-      )}
+     )}
     </section>
   );
 };

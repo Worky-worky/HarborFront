@@ -76,8 +76,11 @@ export function formatAmount(amount: number): string {
   return formatter.format(amount);
 }
 
-export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
-
+// Single, clean export declaration
+export const parseStringify = (value: any): any => {
+  if (!value) return null;
+  return JSON.parse(JSON.stringify(value));
+};
 export const removeSpecialCharacters = (value: string) => {
   return value.replace(/[^\w\s]/gi, "");
 };
@@ -203,8 +206,8 @@ export const authFormSchema = (type: string) => z.object({
   city: type === 'sign-in' ? z.string().optional() : z.string() .min(2) .max(20),
   state: type === 'sign-in' ? z.string().optional() : z.string() .min(2) .max(20),
   postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3) .max(6),
-  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().max(3),
-  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().max(20),
+  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(4) .max(11),
 
   // both sign in and up
   email: z.string().email(),
